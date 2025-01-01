@@ -1,0 +1,19 @@
+[build]
+singleton = false
+
+[player]
+port = 8000
+db_url = ""
+trace_level = "debug"
+jwt_secret = "asdasdasdasda"
+
+[game]
+port = 8000
+db_url = ""
+trace_level = "debug"
+
+[editor]
+port = 8000
+db_url = ""
+trace_level = "debug"
+remote_execution_container = 2

@@ -12,3 +12,4 @@ thiserror = { workspace = true }
 jsonwebtoken = "9.3.0"
 common = { path = "../../common" }
 axum = "0.7.9"
+nutype = { version = "0.5.1", features = ["regex"] }

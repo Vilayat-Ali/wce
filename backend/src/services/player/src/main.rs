@@ -1,7 +1,8 @@
 use axum::Router;
 use common::{config::load_config, logger::AppLogger, tracing};
-use std::{env, error};
-use tokio::net::TcpListener;
+use player::{routes::get_all_routes, AppState};
+use std::{env, error, sync::Arc};
+use tokio::{net::TcpListener, sync::Mutex};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn error::Error>> {
@@ -17,7 +18,13 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
     );
 
     let listener = TcpListener::bind(format!("127.0.0.1:{}", config.player.port)).await?;
-    let app_router = Router::new().layer(AppLogger::get_trace_layer());
+    let app_router = Router::new()
+        // logging and tracing middleware
+        .layer(AppLogger::get_trace_layer())
+        // entry endpoint
+        .nest("/player/api/", get_all_routes())
+        // context store
+        .with_state(Arc::new(Mutex::new(AppState { config })));
 
     tracing::info!(
         "Server running on port {}",

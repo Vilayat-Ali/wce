@@ -14,6 +14,8 @@ The frontend is made in a simple react app using vite.
 
 The backend follows a microservice architecture and is implemented using Rust programming language. The backend microservice is split into 3 services each served in its own docker container.
 
+![Backend Architecture Diagram](./assets/backend-arch.png)
+
 1. Player
 
     This service handles all player related tasks like player rating, player signup/login, etc

@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "src/services/player",
+    "src/services/editor",
+    "src/services/game",
+    "src/common",
+]
+resolver = "2"

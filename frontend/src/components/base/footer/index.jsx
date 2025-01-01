@@ -12,7 +12,7 @@ const AppFooter = () => {
       }}
     >
       <p>
-        © 2025 Syed Vilayat Ali Rizvi & Mohammad Ahmad. All rights reserved. Built with ❤️ for coders.
+        © <span>{new Date().getFullYear()}</span> Syed Vilayat Ali Rizvi & Mohammad Ahmad. All rights reserved. Built with ❤️ for coders.
       </p>
     </Footer>
   );

@@ -1,10 +1,11 @@
-mod routes;
+mod handlers;
+mod validation;
 
 use crate::AppContext;
-use axum::routing::{post, Router};
+use axum::routing::{get, post, Router};
 
 pub fn get_account_router() -> Router<AppContext> {
     Router::new()
-        .route("/signup", post(routes::signup_player))
-        .route("/login", post(routes::login_player))
+        .route("/signup", post(handlers::signup_player))
+        .route("/login", get(handlers::login_player))
 }

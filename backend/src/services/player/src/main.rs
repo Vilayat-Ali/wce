@@ -22,7 +22,7 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
         // logging and tracing middleware
         .layer(AppLogger::get_trace_layer())
         // entry endpoint
-        .nest("/player/api/", get_all_routes())
+        .nest("/player/api", get_all_routes())
         // context store
         .with_state(Arc::new(Mutex::new(AppState { config })));
 

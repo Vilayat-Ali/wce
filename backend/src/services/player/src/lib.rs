@@ -1,11 +1,11 @@
 pub mod db;
+pub mod error;
 pub mod middlewares;
 pub mod routes;
 pub mod utils;
 
-use std::sync::Arc;
-
 use common::config::r#type::Config;
+use std::sync::Arc;
 use tokio::sync::Mutex;
 
 #[derive(Debug, Clone)]

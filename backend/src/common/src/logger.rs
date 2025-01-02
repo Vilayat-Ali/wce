@@ -1,7 +1,8 @@
 use tower_http::{
     classify::SharedClassifier,
-    trace::{DefaultMakeSpan, TraceLayer},
+    trace::{DefaultMakeSpan, DefaultOnFailure, DefaultOnRequest, DefaultOnResponse, TraceLayer},
 };
+use tracing::Level;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 pub struct AppLogger;
@@ -20,6 +21,14 @@ impl AppLogger {
 
     pub fn get_trace_layer(
     ) -> TraceLayer<SharedClassifier<tower_http::classify::ServerErrorsAsFailures>> {
-        TraceLayer::new_for_http().make_span_with(DefaultMakeSpan::default().include_headers(true))
+        TraceLayer::new_for_http()
+            .make_span_with(
+                DefaultMakeSpan::default()
+                    .include_headers(true)
+                    .level(Level::DEBUG),
+            )
+            .on_request(DefaultOnRequest::default().level(Level::DEBUG))
+            .on_response(DefaultOnResponse::default().level(Level::DEBUG))
+            .on_failure(DefaultOnFailure::default().level(Level::ERROR))
     }
 }

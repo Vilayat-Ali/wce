@@ -2,7 +2,6 @@ use super::validation::{Player, PlayerBuilder};
 use crate::{error::PlayerServiceError, AppContext};
 use axum::{extract::State, response::IntoResponse, Json};
 use common::tracing;
-use serde::Deserialize;
 
 pub async fn signup_player(
     State(ctx): State<AppContext>,

@@ -36,6 +36,7 @@ pub struct PlayerGithubUsername(String);
 )]
 pub struct PlayerPassword(String);
 
+#[derive(Default)]
 pub struct PlayerBuilder {
     pub first_name: Option<String>,
     pub last_name: Option<String>,
@@ -44,17 +45,6 @@ pub struct PlayerBuilder {
     pub password: Option<String>,
 }
 
-impl Default for PlayerBuilder {
-    fn default() -> Self {
-        Self {
-            first_name: None,
-            last_name: None,
-            email: None,
-            github_username: None,
-            password: None,
-        }
-    }
-}
 
 impl PlayerBuilder {
     pub fn new() -> Self {
@@ -68,9 +58,9 @@ impl PlayerBuilder {
         match PlayerFirstName::try_new(first_name.into()) {
             Ok(player_first_name) => {
                 self.first_name = Some(player_first_name.into_inner());
-                return Ok(self);
+                Ok(self)
             }
-            Err(e) => return Err(PlayerServiceError::PayloadValidationError(e.to_string())),
+            Err(e) => Err(PlayerServiceError::PayloadValidationError(e.to_string())),
         }
     }
 
@@ -81,9 +71,9 @@ impl PlayerBuilder {
         match PlayerLastName::try_new(last_name.into()) {
             Ok(player_last_name) => {
                 self.last_name = Some(player_last_name.into_inner());
-                return Ok(self);
+                Ok(self)
             }
-            Err(e) => return Err(PlayerServiceError::PayloadValidationError(e.to_string())),
+            Err(e) => Err(PlayerServiceError::PayloadValidationError(e.to_string())),
         }
     }
 
@@ -94,9 +84,9 @@ impl PlayerBuilder {
         match PlayerEmail::try_new(email.into()) {
             Ok(player_email) => {
                 self.email = Some(player_email.into_inner());
-                return Ok(self);
+                Ok(self)
             }
-            Err(e) => return Err(PlayerServiceError::PayloadValidationError(e.to_string())),
+            Err(e) => Err(PlayerServiceError::PayloadValidationError(e.to_string())),
         }
     }
 
@@ -110,9 +100,9 @@ impl PlayerBuilder {
         match PlayerGithubUsername::try_new(github_username.into()) {
             Ok(player_github_username) => {
                 self.github_username = Some(player_github_username.into_inner());
-                return Ok(self);
+                Ok(self)
             }
-            Err(e) => return Err(PlayerServiceError::PayloadValidationError(e.to_string())),
+            Err(e) => Err(PlayerServiceError::PayloadValidationError(e.to_string())),
         }
     }
 
@@ -123,9 +113,9 @@ impl PlayerBuilder {
         match PlayerPassword::try_new(password.into()) {
             Ok(player_password) => {
                 self.password = Some(player_password.into_inner());
-                return Ok(self);
+                Ok(self)
             }
-            Err(e) => return Err(PlayerServiceError::PayloadValidationError(e.to_string())),
+            Err(e) => Err(PlayerServiceError::PayloadValidationError(e.to_string())),
         }
     }
 

@@ -4,15 +4,6 @@ use axum::{extract::State, response::IntoResponse, Json};
 use common::tracing;
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
-pub struct SignupPlayerPayload {
-    pub first_name: String,
-    pub last_name: String,
-    pub email: String,
-    pub github_username: String,
-    pub password: String,
-}
-
 pub async fn signup_player(
     State(ctx): State<AppContext>,
     Json(payload): Json<Player>,

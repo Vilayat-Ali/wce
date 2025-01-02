@@ -1,9 +1,9 @@
 use nutype::nutype;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::error::PlayerServiceError;
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Player {
     pub first_name: String,
     pub last_name: String,

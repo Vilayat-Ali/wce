@@ -1,7 +1,16 @@
+use crate::error::PlayerServiceError;
 use nutype::nutype;
 use serde::{Deserialize, Serialize};
 
-use crate::error::PlayerServiceError;
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DBPlayer {
+    pub id: i32,
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+    pub github_username: String,
+    pub password: String,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Player {
@@ -12,11 +21,11 @@ pub struct Player {
     pub password: String,
 }
 
-impl Player {
-    pub fn get_full_name(&self) -> String {
-        format!("{} {}", &self.first_name, &self.last_name)
-    }
-}
+// impl Player {
+//     pub fn get_full_name(&self) -> String {
+//         format!("{} {}", &self.first_name, &self.last_name)
+//     }
+// }
 
 #[nutype(sanitize(trim), validate(not_empty, len_char_max = 25))]
 pub struct PlayerFirstName(String);
@@ -44,7 +53,6 @@ pub struct PlayerBuilder {
     pub github_username: Option<String>,
     pub password: Option<String>,
 }
-
 
 impl PlayerBuilder {
     pub fn new() -> Self {

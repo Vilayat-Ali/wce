@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 tower-http = { version = "0.6.2", features = ["trace", "fs"] }
-tracing = { version = "0.1.41", features = ["log"] }
+tracing = { workspace = true }
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 toml = "0.8.19"
 serde = { workspace = true }

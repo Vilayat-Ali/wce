@@ -87,7 +87,7 @@ pub async fn signup_player(
 
     let access_token = jwt::generate_jwt_token(&jwt_payload, "secret").map_err(|e| {
         tracing::error!("Error generating JWT token: {:?}", e);
-        return PlayerServiceError::InternalError("Failed to generate JWT token".into());
+        PlayerServiceError::InternalError("Failed to generate JWT token".into())
     });
 
     let access_token = access_token.unwrap();

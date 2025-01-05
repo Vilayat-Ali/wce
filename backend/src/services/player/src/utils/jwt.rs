@@ -2,8 +2,8 @@ use jsonwebtoken::{encode, EncodingKey, Header};
 
 use crate::error::PlayerServiceError;
 
-impl Into<PlayerServiceError> for jsonwebtoken::errors::Error {
-    fn into(self) -> PlayerServiceError {
+impl From<jsonwebtoken::errors::Error> for PlayerServiceError {
+    fn from(val: jsonwebtoken::errors::Error) -> Self {
         PlayerServiceError::InternalError("Failed to generate JWT token".to_string())
     }
 }

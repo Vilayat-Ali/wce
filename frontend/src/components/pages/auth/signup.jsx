@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Checkbox, Card, Typography, Row, Col, Modal, Spin, } from "antd";
+import { Form, Input, Button, Checkbox, Card, Typography, Row, Col, Modal, Spin, message } from "antd";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -27,22 +27,52 @@ const Register = () => {
         setIsModalOpen(false);
     };
 
-    const handleSubmit = (values) => {
+    const handleSubmit = async (values) => {
         setLoading(true);
-        setTimeout(() => {
-            console.log("Form Values:", values);
+        try {
+            // API endpoint for registration
+            const apiEndpoint = "https://example.com/api/register"; 
+
+            const response = await fetch(apiEndpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values), // Send form values as JSON
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                message.success("Registration Successful!");
+                navigate("/login");
+            } else {
+                message.error(result.message || "Registration failed!");
+            }
+        } catch (error) {
+            message.error("An error occurred during registration!");
+            console.error("Error:", error);
+        } finally {
             setLoading(false);
-            // Placeholder for successful registration logic
-            alert("Registration Successful!");
-            navigate("/login");
-        }, 1000);
+        }
     };
 
     return (
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
             <Card style={{ width: "100%", maxWidth: "700px", padding: "24px" }}>
                 {isLoading && (
-                    <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(255, 255, 255, 0.7)", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <div
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: "rgba(255, 255, 255, 0.7)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
                         <Spin size="large" />
                     </div>
                 )}
@@ -54,13 +84,21 @@ const Register = () => {
                 <Form onFinish={handleSubmit} layout="vertical">
                     <Row gutter={24}>
                         <Col span={12}>
-                            <Form.Item label="Name" name="fullName" rules={[{ required: true, message: "Please input your full name!" }]}>
+                            <Form.Item
+                                label="Name"
+                                name="fullName"
+                                rules={[{ required: true, message: "Please input your full name!" }]}
+                            >
                                 <Input placeholder="Enter your full name" />
                             </Form.Item>
                         </Col>
 
                         <Col span={12}>
-                            <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please enter your email!" }]}>
+                            <Form.Item
+                                label="Email"
+                                name="email"
+                                rules={[{ required: true, message: "Please enter your email!" }]}
+                            >
                                 <Input type="email" placeholder="Enter your email" />
                             </Form.Item>
                         </Col>
@@ -68,14 +106,25 @@ const Register = () => {
 
                     <Row gutter={24}>
                         <Col span={12}>
-                            <Form.Item label="Mobile Number" name="mobileNumber" rules={[{ required: true, message: "Please enter your phone number" }]}>
+                            <Form.Item
+                                label="Mobile Number"
+                                name="mobileNumber"
+                                rules={[{ required: true, message: "Please enter your phone number" }]}
+                            >
                                 <Input type="number" placeholder="Enter your phone number" />
                             </Form.Item>
                         </Col>
 
                         <Col span={12}>
-                            <Form.Item label="Password" name="password" rules={[{ required: true, message: "Please enter your password!" }]}>
-                                <Input.Password placeholder="Enter your password" iconRender={(visible) => (visible ? <EyeInvisibleOutlined /> : <EyeOutlined />)} />
+                            <Form.Item
+                                label="Password"
+                                name="password"
+                                rules={[{ required: true, message: "Please enter your password!" }]}
+                            >
+                                <Input.Password
+                                    placeholder="Enter your password"
+                                    iconRender={(visible) => (visible ? <EyeInvisibleOutlined /> : <EyeOutlined />)}
+                                />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -88,8 +137,25 @@ const Register = () => {
                         </Col>
 
                         <Col span={12}>
-                            <Form.Item label="Confirm Password" name="confirmPassword" rules={[{ required: true, message: "Please confirm your password!" }]}>
-                                <Input.Password placeholder="Confirm your password" iconRender={(visible) => (visible ? <EyeInvisibleOutlined /> : <EyeOutlined />)} />
+                            <Form.Item
+                                label="Confirm Password"
+                                name="confirmPassword"
+                                rules={[
+                                    { required: true, message: "Please confirm your password!" },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue("password") === value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error("Passwords do not match!"));
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <Input.Password
+                                    placeholder="Confirm your password"
+                                    iconRender={(visible) => (visible ? <EyeInvisibleOutlined /> : <EyeOutlined />)}
+                                />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -110,7 +176,8 @@ const Register = () => {
                             <Text
                                 as="span"
                                 style={{
-                                    color: "blue",
+                                    color: "#673995",
+                                    fontWeight: "bold",
                                     cursor: "pointer",
                                     textDecoration: "underline",
                                 }}
@@ -148,7 +215,6 @@ const Register = () => {
                     ]}
                 >
                     <div>
-                        {/* <h3>Terms and Conditions</h3> */}
                         <p>
                             By registering, you agree to our terms of service and privacy policy. Please read them carefully
                             before proceeding with registration.
@@ -160,13 +226,10 @@ const Register = () => {
                             <li style={{ marginBottom: "10px" }}>
                                 We may update our terms and conditions from time to time.
                             </li>
-                            <li>
-                                Your account is personal and should not be shared.
-                            </li>
+                            <li>Your account is personal and should not be shared.</li>
                         </ul>
                     </div>
                 </Modal>
-
             </Card>
         </div>
     );

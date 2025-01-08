@@ -1,15 +1,17 @@
 [build]
+# singleton field defines if the project has to be bootstrapped into a single
+# container or has to divide into multiple docker containers.
 singleton = false
 
 [player]
 port = 8000
-db_url = ""
-trace_level = "debug"
+db_url = "postgres://postgres:postgres@localhost:5432/wce"
+trace_level = "trace"
 jwt_secret = "asdasdasdasda"
 
 [game]
-port = 8000
 db_url = ""
+port = 8000
 trace_level = "debug"
 
 [editor]

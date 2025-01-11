@@ -7,7 +7,6 @@ const AppFooter = () => {
     <Footer
       style={{
         textAlign: "center",
-        backgroundColor: "#f0f0f0",
         padding: "0",
       }}
     >

@@ -53,7 +53,7 @@ const Login = () => {
                     </Form.Item>
 
                     <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
-                        <Link to="/forgot-password" style={{ color: "#096dd9" }}>
+                        <Link to="/forgot-password" style={{ fontWeight: "bold", color: "#673995" }}>
                             Forgot Password?
                         </Link>
                     </div>
@@ -67,7 +67,7 @@ const Login = () => {
 
                 <Text style={{ display: "block", textAlign: "center", marginTop: "16px" }}>
                     Don&apos;t have an account?{" "}
-                    <Link to="/signup" style={{ color: "#096dd9" }}>
+                    <Link to="/signup" style={{ fontWeight: "bold", color: "#673995" }}>
                         Register
                     </Link>
                 </Text>

@@ -1,4 +1,14 @@
-CREATE TABLE player (
+-- COMMON FUNCTIONS
+CREATE OR REPLACE FUNCTION update_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- PLAYERS
+CREATE TABLE IF NOT EXISTS players (
     id SERIAL PRIMARY KEY,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
@@ -10,17 +20,9 @@ CREATE TABLE player (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_player_email ON player (email);
-
-CREATE OR REPLACE FUNCTION update_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+CREATE INDEX idx_player_email ON players (email);
 
 CREATE TRIGGER update_player_updated_at
-BEFORE UPDATE ON player
+BEFORE UPDATE ON players
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at();

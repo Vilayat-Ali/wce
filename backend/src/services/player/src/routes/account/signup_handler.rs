@@ -1,7 +1,6 @@
-use super::validation::PlayerBuilder;
-use crate::{error::PlayerServiceError, utils::jwt, AppContext, PlayerJWTPayload};
+use crate::{db::player::*, error::PlayerServiceError, utils::jwt, AppContext, PlayerJWTPayload};
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
-use common::response::SuccessDataResponse;
+use common::{bcrypt::BcryptHasher, response::SuccessDataResponse, traits::DBModel};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -20,7 +19,7 @@ pub struct SignupSuccessResponse {
     player: PlayerJWTPayload,
 }
 
-pub async fn signup_player(
+pub async fn signup_player_handler(
     State(ctx): State<AppContext>,
     Json(payload): Json<SignupPayload>,
 ) -> Result<impl IntoResponse, PlayerServiceError> {
@@ -35,7 +34,7 @@ pub async fn signup_player(
         github_username,
     } = payload;
 
-    let validated_player = PlayerBuilder::new()
+    let validated_player = PlayerBuilder::init()
         .set_first_name(first_name.unwrap_or_default())?
         .set_last_name(last_name.unwrap_or_default())?
         .set_email(email.unwrap_or_default())?
@@ -45,35 +44,9 @@ pub async fn signup_player(
 
     tracing::debug!("Payload data for user has been parsed and validated successfully");
 
-    let new_player = sqlx::query!(
-        r#"
-            INSERT INTO players (
-                first_name,
-                last_name,
-                email,
-                github_username,
-                password
-            ) VALUES (
-                $1,
-                $2,
-                $3,
-                $4,
-                $5
-            )
-            RETURNING id, first_name, last_name, email, github_username, created_at;
-        "#,
-        validated_player.first_name,
-        validated_player.last_name,
-        validated_player.email,
-        validated_player.github_username,
-        validated_player.password
-    )
-    .fetch_one(&context.pg_pool)
-    .await
-    .map_err(|e| {
-        tracing::error!("{:#?}", e.as_database_error());
-        PlayerServiceError::PayloadValidationError("Failed to add user to the database".into())
-    })?;
+    let mut player_model = PlayerModel::new(&context.pg_pool);
+
+    let creation_response = player_model.create(validated_player).await?;
 
     tracing::info!("Player has been saved to database. Generating JWT tokens");
 

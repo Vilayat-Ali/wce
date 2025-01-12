@@ -1,3 +1,4 @@
+pub mod db;
 pub mod error;
 pub mod middlewares;
 pub mod routes;

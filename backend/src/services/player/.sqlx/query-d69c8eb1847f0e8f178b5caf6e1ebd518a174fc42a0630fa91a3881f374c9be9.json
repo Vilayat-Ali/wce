@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO players (\n                    first_name,\n                    last_name,\n                    email,\n                    github_username,\n                    password\n                ) VALUES (\n                    $1,\n                    $2,\n                    $3,\n                    $4,\n                    $5\n                ) RETURNING id;\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "d69c8eb1847f0e8f178b5caf6e1ebd518a174fc42a0630fa91a3881f374c9be9"
+}

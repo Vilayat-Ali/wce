@@ -1,7 +1,6 @@
 use crate::error::PlayerServiceError;
 use nutype::nutype;
 use serde::{Deserialize, Serialize};
-use sqlx::Postgres;
 use std::string::String;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -114,7 +113,7 @@ impl PlayerBuilder {
         Ok(self)
     }
 
-    pub fn build(self) -> Player {
+    pub fn build(&mut self) -> Player {
         let PlayerBuilder {
             first_name,
             last_name,
@@ -125,23 +124,12 @@ impl PlayerBuilder {
 
         Player {
             id: None,
-            first_name: first_name.unwrap().into_inner(),
-            last_name: last_name.unwrap().into_inner(),
-            email: email.unwrap().into_inner(),
+            first_name: first_name.clone().unwrap().into_inner(),
+            last_name: last_name.clone().unwrap().into_inner(),
+            email: email.clone().unwrap().into_inner(),
             rating: None,
-            github_username: github_username.unwrap().into_inner(),
-            password: password.unwrap().into_inner(),
+            github_username: github_username.clone().unwrap().into_inner(),
+            password: password.clone().unwrap().into_inner(),
         }
-    }
-}
-
-#[derive(Debug)]
-pub struct PlayerModel<'a> {
-    pool: &'a sqlx::Pool<Postgres>,
-}
-
-impl<'a> PlayerModel<'a> {
-    pub fn new(pool: &'a sqlx::Pool<Postgres>) -> Self {
-        Self { pool }
     }
 }

@@ -9,6 +9,8 @@ pub enum PlayerServiceError {
     ValidationError(String),
     #[error("Server Error: {0}")]
     InternalError(String),
+    #[error("Database Error: {0}")]
+    DatabaseError(String),
 }
 
 #[derive(Debug, Serialize)]
@@ -36,6 +38,16 @@ impl IntoResponse for PlayerServiceError {
 
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
+                    serde_json::to_string(&error_response).unwrap(),
+                )
+            }
+            Self::DatabaseError(err_message) => {
+                let error_response = PlayerServiceErrorResponse {
+                    message: err_message.to_string(),
+                };
+
+                (
+                    StatusCode::EXPECTATION_FAILED,
                     serde_json::to_string(&error_response).unwrap(),
                 )
             }

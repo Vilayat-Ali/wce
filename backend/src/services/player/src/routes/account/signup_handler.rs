@@ -1,7 +1,8 @@
-use crate::{db::player::*, error::PlayerServiceError, utils::jwt, AppContext, PlayerJWTPayload};
+use crate::{db::player::*, error::PlayerServiceError, AppContext};
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
-use common::{bcrypt::BcryptHasher, response::SuccessDataResponse, traits::DBModel};
+use common::{response::SuccessDataResponse, traits::db_trait::DBModel};
 use serde::{Deserialize, Serialize};
+use validate::PlayerBuilder;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SignupPayload {
@@ -16,7 +17,6 @@ pub struct SignupPayload {
 pub struct SignupSuccessResponse {
     access_token: String,
     refresh_token: String,
-    player: PlayerJWTPayload,
 }
 
 pub async fn signup_player_handler(
@@ -44,35 +44,18 @@ pub async fn signup_player_handler(
 
     tracing::debug!("Payload data for user has been parsed and validated successfully");
 
-    let mut player_model = PlayerModel::new(&context.pg_pool);
+    let player_model = PlayerModel::new(&context.pg_pool);
+    let auth_tokens = player_model.create(validated_player).await?;
 
-    let creation_response = player_model.create(validated_player).await?;
-
-    tracing::info!("Player has been saved to database. Generating JWT tokens");
-
-    let jwt_payload = PlayerJWTPayload {
-        id: new_player.id,
-        first_name: validated_player.first_name.clone(),
-        last_name: validated_player.last_name.clone(),
-        email: validated_player.email.clone(),
-        github_username: validated_player.github_username.clone(),
-    };
-
-    let access_token = jwt::generate_jwt_token(&jwt_payload, "secret").map_err(|e| {
-        tracing::error!("Error generating JWT token: {:?}", e);
-        PlayerServiceError::InternalError("Failed to generate JWT token".into())
-    });
-
-    let access_token = access_token.unwrap();
+    tracing::debug!("Player saved in the database");
 
     // Returning success with the created player ID
     Ok(Json(SuccessDataResponse {
         status: StatusCode::CREATED.as_u16(),
         message: "Player Created Successfully".into(),
         data: SignupSuccessResponse {
-            access_token: access_token.clone(),
-            refresh_token: access_token,
-            player: jwt_payload,
+            access_token: auth_tokens.0,
+            refresh_token: auth_tokens.1,
         },
     }))
 }

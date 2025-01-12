@@ -13,3 +13,4 @@ serde = { version = "1.0.217", features = ["derive"] }
 serde_json = "1.0.134"
 thiserror = "2.0.9"
 tracing = { version = "0.1.41", features = ["log"] }
+futures = "0.3.31"

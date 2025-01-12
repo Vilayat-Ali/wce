@@ -4,12 +4,12 @@ use serde::{Deserialize, Serialize};
 use std::string::String;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Player {
-    pub id: Option<i32>,
+pub struct PlayerSchema {
+    pub id: i32,
     pub first_name: String,
     pub last_name: String,
     pub email: String,
-    pub rating: Option<usize>,
+    pub rating: i32,
     pub github_username: String,
     pub password: String,
 }
@@ -48,6 +48,15 @@ pub struct PlayerGithubUsername(String);
     derive(Debug, Clone)
 )]
 pub struct PlayerPassword(String);
+
+#[derive(Debug, Clone)]
+pub struct CreatePlayer {
+    pub first_name: String,
+    pub last_name: String,
+    pub email: String,
+    pub github_username: String,
+    pub password: String,
+}
 
 #[derive(Debug, Clone, Default)]
 pub struct PlayerBuilder {
@@ -113,7 +122,7 @@ impl PlayerBuilder {
         Ok(self)
     }
 
-    pub fn build(&mut self) -> Player {
+    pub fn build(&mut self) -> CreatePlayer {
         let PlayerBuilder {
             first_name,
             last_name,
@@ -122,12 +131,10 @@ impl PlayerBuilder {
             password,
         } = self;
 
-        Player {
-            id: None,
+        CreatePlayer {
             first_name: first_name.clone().unwrap().into_inner(),
             last_name: last_name.clone().unwrap().into_inner(),
             email: email.clone().unwrap().into_inner(),
-            rating: None,
             github_username: github_username.clone().unwrap().into_inner(),
             password: password.clone().unwrap().into_inner(),
         }

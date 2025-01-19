@@ -9,7 +9,7 @@ impl BcryptHasher {
         hash(data_string.into(), DEFAULT_COST)
     }
 
-    pub fn verify_hash<S: Into<String>>(data_string: S, hash: S) -> BcryptResult<bool> {
-        verify(data_string.into(), &hash.into())
+    pub fn verify_hash<S: Into<String>>(data_string: S, hash: &str) -> BcryptResult<bool> {
+        verify(data_string.into(), hash)
     }
 }

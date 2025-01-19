@@ -14,8 +14,7 @@ pub struct SignupPayload {
 }
 
 #[derive(Debug, Serialize)]
-pub struct SignupSuccessResponse {
-    message: &'static str,
+struct SignupSuccessResponse {
     data: AuthTokens,
 }
 
@@ -55,9 +54,6 @@ pub async fn signup_player_handler(
     Ok(Json(SuccessDataResponse {
         status: StatusCode::CREATED.as_u16(),
         message: "Player Created Successfully".into(),
-        data: SignupSuccessResponse {
-            message: "User successfully signed in",
-            data: auth_tokens,
-        },
+        data: SignupSuccessResponse { data: auth_tokens },
     }))
 }

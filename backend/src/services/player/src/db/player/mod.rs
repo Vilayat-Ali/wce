@@ -23,6 +23,31 @@ impl<'a> PlayerModel<'a> {
     pub fn new(pool: &'a sqlx::Pool<Postgres>) -> Self {
         Self { pool }
     }
+
+    pub async fn get_by_email<S>(&self, email: S) -> Result<PlayerSchema, PlayerServiceError>
+    where
+        S: Into<String>,
+    {
+        let record = sqlx::query!(
+            r#"
+                SELECT * FROM players WHERE email = $1;
+            "#,
+            email.into()
+        )
+        .fetch_one(self.pool)
+        .await
+        .map_err(|e| PlayerServiceError::DatabaseError(e.to_string()))?;
+
+        Ok(PlayerSchema {
+            first_name: record.first_name,
+            last_name: record.last_name,
+            email: record.email,
+            github_username: record.github_username,
+            password: record.password,
+            rating: record.rating.unwrap_or(1500),
+            id: record.id,
+        })
+    }
 }
 
 impl<'a> DBModel for PlayerModel<'a> {
@@ -91,10 +116,9 @@ impl<'a> DBModel for PlayerModel<'a> {
         .map_err(|e| PlayerServiceError::DatabaseError(e.to_string()))?;
 
         let now = SystemTime::now();
-        let iat = now.duration_since(UNIX_EPOCH).unwrap().as_secs() as usize;
+        let iat = now.duration_since(UNIX_EPOCH)?.as_secs() as usize;
         let exp = (now + std::time::Duration::new(3600, 0))
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
+            .duration_since(UNIX_EPOCH)?
             .as_secs() as usize;
 
         let jwt_payload = PlayerJWTPayload {

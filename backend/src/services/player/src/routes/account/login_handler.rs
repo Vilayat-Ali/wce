@@ -1,8 +1,6 @@
 use crate::{
-    db::player::*,
-    error::PlayerServiceError,
-    utils::jwt::{generate_auth_token, AuthTokens},
-    AppContext, PlayerJWTPayload,
+    db::player::*, error::PlayerServiceError, utils::jwt::generate_auth_token, AppContext,
+    PlayerJWTPayload,
 };
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use common::{bcrypt::BcryptHasher, response::SuccessDataResponse};
@@ -13,11 +11,6 @@ use validate::{PlayerEmail, PlayerPassword};
 pub struct LoginPayload {
     pub email: String,
     pub password: String,
-}
-
-#[derive(Debug, Serialize)]
-struct LoginSuccessResponse {
-    data: AuthTokens,
 }
 
 pub async fn login_player_handler(
@@ -56,6 +49,6 @@ pub async fn login_player_handler(
     Ok(Json(SuccessDataResponse {
         status: StatusCode::CREATED.as_u16(),
         message: "Player logged in successfully".into(),
-        data: LoginSuccessResponse { data: auth_tokens },
+        data: auth_tokens,
     }))
 }

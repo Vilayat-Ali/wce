@@ -1,0 +1,63 @@
+services:
+  entrypoint:
+    build:
+      context: ./src/app # Assuming entrypoint Dockerfile is located in ./src/app
+    ports:
+      - "8000:8000" # Exposes port 8000 for the entrypoint service
+    depends_on:
+      - playerservice # Entry point depends on the player service
+      - gameservice # Entry point depends on the game service
+      - editorservice # Entry point depends on the editor service
+    environment:
+      - PLAYER_SERVICE_URL=http://playerservice:8081
+      - GAME_SERVICE_URL=http://gameservice:8082
+      - EDITOR_SERVICE_URL=http://editorservice:8083
+
+  playerservice:
+    build:
+      context: ./src/services/player # Dockerfile for player service located in ./src/services/player
+    ports:
+      - "8081:8081" # Exposes port 8081 for the player service
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/wce # Connects to the PostgreSQL container
+    networks:
+      - app_network # Ensures all services can communicate with each other
+
+  gameservice:
+    build:
+      context: ./src/services/game # Dockerfile for game service located in ./src/services/game
+    ports:
+      - "8082:8082" # Exposes port 8082 for the game service
+    networks:
+      - app_network # Ensures all services can communicate with each other
+
+  editorservice:
+    build:
+      context: ./src/services/editor # Dockerfile for editor service located in ./src/services/editor
+    ports:
+      - "8083:8083" # Exposes port 8083 for the editor service
+    networks:
+      - app_network # Ensures all services can communicate with each other
+
+  db:
+    image: postgres:alpine # Uses the official PostgreSQL image
+    environment:
+      POSTGRES_USER: postgres # Creates the user "postgres"
+      POSTGRES_PASSWORD: postgres # Sets the password for the "postgres" user
+      POSTGRES_DB: wce # Creates the "wce" database
+    volumes:
+      - db_data:/var/lib/postgresql/data # Persist database data between container restarts
+    networks:
+      - app_network # Ensures all services can communicate with each other
+
+  redis:
+    image: redis:alpine # Uses the official Redis image
+    networks:
+      - app_network # Ensures all services can communicate with each other
+
+networks:
+  app_network:
+    driver: bridge # Creates a bridge network for internal communication between services
+
+volumes:
+  db_data: # Defines a volume to persist the PostgreSQL database data

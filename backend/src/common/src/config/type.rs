@@ -18,7 +18,8 @@ pub struct PlayerServiceConfig {
     pub port: usize,
     pub trace_level: String,
     pub db_url: String,
-    pub jwt_secret: String,
+    pub access_token_secret: String,
+    pub refresh_token_secret: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]

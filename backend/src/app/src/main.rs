@@ -17,7 +17,6 @@ async fn main() -> Result<(), Box<dyn error::Error>> {
     );
 
     let listener = TcpListener::bind(format!("127.0.0.1:{}", config.proxy.port)).await?;
-    let app_router = Router::new();
 
     tracing::info!(
         "Proxy server running on port {}",

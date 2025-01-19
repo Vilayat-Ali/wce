@@ -19,3 +19,4 @@ sqlx = { version = "0.8.3", features = [
     "time",
 ] }
 tracing = { workspace = true }
+futures = { workspace = true }

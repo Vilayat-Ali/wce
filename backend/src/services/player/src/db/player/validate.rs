@@ -1,7 +1,10 @@
-use crate::error::PlayerServiceError;
+use crate::{error::PlayerServiceError, PlayerJWTPayload};
 use nutype::nutype;
 use serde::{Deserialize, Serialize};
-use std::string::String;
+use std::{
+    string::String,
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PlayerSchema {
@@ -12,6 +15,27 @@ pub struct PlayerSchema {
     pub rating: i32,
     pub github_username: String,
     pub password: String,
+}
+
+impl Into<PlayerJWTPayload> for PlayerSchema {
+    fn into(self) -> PlayerJWTPayload {
+        let now = SystemTime::now();
+        let iat = now.duration_since(UNIX_EPOCH).unwrap().as_secs() as usize;
+        let exp = (now + std::time::Duration::new(3600, 0))
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as usize;
+
+        PlayerJWTPayload {
+            id: self.id,
+            first_name: self.first_name,
+            last_name: self.last_name,
+            email: self.email,
+            github_username: self.github_username,
+            iat,
+            exp,
+        }
+    }
 }
 
 #[nutype(
@@ -35,6 +59,12 @@ pub struct PlayerLastName(String);
 )]
 pub struct PlayerEmail(String);
 
+impl From<PlayerEmailError> for PlayerServiceError {
+    fn from(value: PlayerEmailError) -> Self {
+        Self::ValidationError(value.to_string())
+    }
+}
+
 #[nutype(
     sanitize(trim),
     validate(not_empty, len_char_max = 50),
@@ -48,6 +78,12 @@ pub struct PlayerGithubUsername(String);
     derive(Debug, Clone)
 )]
 pub struct PlayerPassword(String);
+
+impl From<PlayerPasswordError> for PlayerServiceError {
+    fn from(value: PlayerPasswordError) -> Self {
+        Self::ValidationError(value.to_string())
+    }
+}
 
 #[derive(Debug, Clone)]
 pub struct CreatePlayer {

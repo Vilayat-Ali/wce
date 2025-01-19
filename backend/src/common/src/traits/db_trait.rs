@@ -15,6 +15,7 @@ where
     type ServiceError;
     type Id;
     type Schema;
+    type Config;
 
     type CreatePayload;
     type CreateResponse;
@@ -23,6 +24,7 @@ where
     fn create(
         &self,
         data: Self::CreatePayload,
+        config: Option<&Self::Config>,
     ) -> impl std::future::Future<Output = Result<Self::CreateResponse, Self::ServiceError>> + Send
     where
         Self::CreatePayload: std::marker::Send;

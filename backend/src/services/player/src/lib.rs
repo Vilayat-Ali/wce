@@ -24,6 +24,8 @@ pub struct PlayerJWTPayload {
     pub last_name: String,
     pub email: String,
     pub github_username: String,
+    exp: usize,
+    iat: usize,
 }
 
 pub type AppContext = Arc<Mutex<AppState>>;

@@ -4,18 +4,19 @@
 singleton = false
 
 [player]
-port = 8000
+port = 8001
 db_url = "postgres://postgres:postgres@localhost:5432/wce"
 trace_level = "trace"
-jwt_secret = "asdasdasdasda"
+access_token_secret = "210dd426e85dfad76aa52b093055cf404393db7f8e0c3a9a20db5c7cf657088dd8fecfc55eaa4ca526a4b8bcf1752d7039e3f74ed0fb5c2289fe262fe06ed41a"
+refresh_token_secret = "dbefdadaf2ec528c3e2e91035585b1bce313340a4040da1a32ea6b34637b986aeb8a87307b405a6003832f1c7479f3768bdfddeba6541d2d2116ca6be19296ef"
 
 [game]
 db_url = ""
-port = 8000
+port = 8002
 trace_level = "debug"
 
 [editor]
-port = 8000
+port = 8003
 db_url = ""
 trace_level = "debug"
 remote_execution_container = 2

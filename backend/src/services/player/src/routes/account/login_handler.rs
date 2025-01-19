@@ -1,10 +1,6 @@
-use crate::{error::PlayerServiceError, utils::jwt, AppContext, PlayerJWTPayload};
-use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
-use common::{
-    bcrypt::BcryptHasher,
-    response::{SuccessDataResponse, SuccessResponse},
-};
-use serde::{Deserialize, Serialize};
+use crate::error::PlayerServiceError;
+use axum::{http::StatusCode, response::IntoResponse, Json};
+use common::response::SuccessResponse;
 
 pub async fn login_player_handler() -> Result<impl IntoResponse, PlayerServiceError> {
     // Returning success with the created player ID

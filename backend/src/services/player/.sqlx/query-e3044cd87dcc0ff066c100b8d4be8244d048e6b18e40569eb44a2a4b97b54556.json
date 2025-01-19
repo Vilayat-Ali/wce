@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO player_auth (\n                    player_id,\n                    refresh_token\n                ) VALUES (\n                 $1,\n                 $2\n                ) RETURNING player_id;\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "player_id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "e3044cd87dcc0ff066c100b8d4be8244d048e6b18e40569eb44a2a4b97b54556"
+}

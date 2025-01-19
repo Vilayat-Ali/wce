@@ -1,4 +1,4 @@
-use crate::{db::player::*, error::PlayerServiceError, AppContext};
+use crate::{db::player::*, error::PlayerServiceError, utils::jwt::AuthTokens, AppContext};
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use common::{response::SuccessDataResponse, traits::db_trait::DBModel};
 use serde::{Deserialize, Serialize};
@@ -15,8 +15,8 @@ pub struct SignupPayload {
 
 #[derive(Debug, Serialize)]
 pub struct SignupSuccessResponse {
-    access_token: String,
-    refresh_token: String,
+    message: &'static str,
+    data: AuthTokens,
 }
 
 pub async fn signup_player_handler(
@@ -45,7 +45,9 @@ pub async fn signup_player_handler(
     tracing::debug!("Payload data for user has been parsed and validated successfully");
 
     let player_model = PlayerModel::new(&context.pg_pool);
-    let auth_tokens = player_model.create(validated_player).await?;
+    let auth_tokens = player_model
+        .create(validated_player, Some(&context.config))
+        .await?;
 
     tracing::debug!("Player saved in the database");
 
@@ -54,8 +56,8 @@ pub async fn signup_player_handler(
         status: StatusCode::CREATED.as_u16(),
         message: "Player Created Successfully".into(),
         data: SignupSuccessResponse {
-            access_token: auth_tokens.0,
-            refresh_token: auth_tokens.1,
+            message: "User successfully signed in",
+            data: auth_tokens,
         },
     }))
 }

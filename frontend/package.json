@@ -6,14 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "prepare": "npx husky install"
+    "lint": "next lint"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@reduxjs/toolkit": "^2.5.0",
     "antd": "^5.23.2",
-    "husky": "^9.1.7",
     "motion": "^12.0.5",
     "next": "15.1.5",
     "react": "^19.0.0",
